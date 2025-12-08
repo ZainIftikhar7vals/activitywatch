@@ -90,6 +90,7 @@ awa_location = Path("aw-watcher-afk")
 aww_location = Path("aw-watcher-window")
 awi_location = Path("aw-watcher-input")
 aw_notify_location = Path("aw-notify")
+package_files_location = Path("package-files")
 
 if platform.system() == "Darwin":
     icon = aw_qt_location / "media/logo/logo.icns"
@@ -169,6 +170,14 @@ aw_notify_a = build_analysis(
     "aw_notify", aw_notify_location, hiddenimports=["desktop_notifier.resources"]
 )
 
+package_files_a = build_analysis(
+  "package_files",
+  package_files_location,
+  datas=[
+    (package_files_location / "resources/ATTRIBUTION.txt", ".")
+  ]
+)
+
 # https://pythonhosted.org/PyInstaller/spec-files.html#multipackage-bundles
 # MERGE takes a bit weird arguments, it wants tuples which consists of
 # the analysis paired with the script name and the bin name
@@ -203,6 +212,9 @@ awi_coll = build_collect(aw_watcher_input_a, "aw-watcher-input")
 
 aw_notify_coll = build_collect(aw_notify_a, "aw-notify")
 
+# files for root directory
+package_files_coll = build_collect(package_files_a, "package-files")
+
 if platform.system() == "Darwin":
     app = BUNDLE(
         awq_coll,
@@ -211,9 +223,10 @@ if platform.system() == "Darwin":
         awa_coll,
         awi_coll,
         aw_notify_coll,
-        name="ActivityWatch.app",
+        package_files_coll,
+        name="AssetSonar Activity Tracker.app",
         icon=icon,
-        bundle_identifier="net.activitywatch.ActivityWatch",
+        bundle_identifier="io.ezo.assetsonaractivitytracker",
         version=current_release.lstrip("v"),
         info_plist={
             "NSPrincipalClass": "NSApplication",

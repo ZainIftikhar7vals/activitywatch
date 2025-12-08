@@ -152,7 +152,7 @@ dist/ActivityWatch.app: aw-qt/media/logo/logo.icns
 dist/ActivityWatch.dmg: dist/ActivityWatch.app
 	# NOTE: This does not codesign the dmg, that is done in the CI config
 	pip install dmgbuild
-	dmgbuild -s scripts/package/dmgbuild-settings.py -D app=dist/ActivityWatch.app "ActivityWatch" dist/ActivityWatch.dmg
+	dmgbuild -s scripts/package/dmgbuild-settings.py -D app="dist/AssetSonar Activity Tracker.app" "AssetSonar Activity Tracker" "dist/AssetSonar Activity Tracker.dmg"
 
 dist/notarize:
 	./scripts/notarize.sh
