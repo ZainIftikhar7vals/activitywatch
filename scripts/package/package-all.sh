@@ -43,6 +43,21 @@ version=$(get_version)
 arch=$(get_arch)
 echo "Platform: $platform, arch: $arch, version: $version"
 
+SIGN_THUMBPRINT="866d1fe067993331d92fcf7c624fbdad211a794a"
+TIMESTAMP_URL="http://timestamp.digicert.com"
+
+function sign_payload() {
+    local file
+    echo "Signing binaries in dist/activitywatch..."
+    while IFS= read -r -d '' file; do
+
+        echo "Signing $file"
+        # Git Bash rewrites arguments that start with / into paths.
+        MSYS2_ARG_CONV_EXCL='*' signtool sign /sha1 "$SIGN_THUMBPRINT" /fd SHA256 /td SHA256 /a /tr "$TIMESTAMP_URL" "$file"
+
+    done < <(find dist/activitywatch -type f \( -iname '*.exe' -o -iname '*.dll' -o -iname '*.pyd' \) -print0)
+}
+
 function build_zip() {
     echo "Zipping executables..."
     pushd dist;
@@ -70,11 +85,18 @@ function build_setup() {
 
     # Windows installer version should not include 'v' prefix, see: https://github.com/microsoft/winget-pkgs/pull/17564
     version_no_prefix="$(echo $version | sed -e 's/^v//')"
-    env AW_VERSION=$version_no_prefix "$innosetupdir/iscc.exe" scripts/package/activitywatch-setup.iss
+    # $f is filled in by Inno Setup. Git Bash rewrites arguments that start with / into paths.
+    env MSYS2_ARG_CONV_EXCL='*' AW_VERSION=$version_no_prefix \
+        "$innosetupdir/iscc.exe" \
+        "/Ssigntool=signtool sign /sha1 ${SIGN_THUMBPRINT} /fd SHA256 /td SHA256 /a /tr ${TIMESTAMP_URL} \$f" \
+        scripts/package/activitywatch-setup.iss
     mv dist/activitywatch-setup.exe dist/$filename
     echo "Setup built!"
 }
 
+if [[ $platform == "windows"* ]]; then
+    sign_payload
+fi
 build_zip
 if [[ $platform == "windows"* ]]; then
     build_setup

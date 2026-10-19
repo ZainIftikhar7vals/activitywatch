@@ -36,6 +36,8 @@ Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 InfoBeforeFile=license.txt
+SignTool=signtool
+SignedUninstaller=yes
 
 [Messages]
 PrivilegesRequiredOverrideInstruction=Select installation method
