@@ -12,7 +12,7 @@ else
     _version=$(git describe --tags --abbrev=0 --exact-match 2>/dev/null)
     if [[ -z $_version ]]; then
         # Latest tag + commit ID
-        _version="$(git describe --tags --abbrev=0).dev-$(git rev-parse --short HEAD)"
+        _version="$(git describe --tags --abbrev=0)"
     fi
 fi
 
