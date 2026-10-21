@@ -158,26 +158,26 @@ dist/notarize:
 	./scripts/notarize.sh
 
 package:
-	rm -rf dist
-	mkdir -p dist/activitywatch
-	for dir in $(PACKAGEABLES); do \
-		make --directory=$$dir package; \
-		cp -r $$dir/dist/$$dir dist/activitywatch; \
-	done
-# Move aw-qt to the root of the dist folder
-	mv dist/activitywatch/aw-qt aw-qt-tmp
-	mv aw-qt-tmp/* dist/activitywatch
-	rmdir aw-qt-tmp
-# Remove problem-causing binaries
-	rm -f dist/activitywatch/libdrm.so.2       # see: https://github.com/ActivityWatch/activitywatch/issues/161
-	rm -f dist/activitywatch/libharfbuzz.so.0  # see: https://github.com/ActivityWatch/activitywatch/issues/660#issuecomment-959889230
-# These should be provided by the distro itself
-# Had to be removed due to otherwise causing the error:
-#   aw-qt: symbol lookup error: /opt/activitywatch/libQt5XcbQpa.so.5: undefined symbol: FT_Get_Font_Format
-	rm -f dist/activitywatch/libfontconfig.so.1
-	rm -f dist/activitywatch/libfreetype.so.6
-# Remove unnecessary files
-	rm -rf dist/activitywatch/pytz
+# 	rm -rf dist
+# 	mkdir -p dist/activitywatch
+# 	for dir in $(PACKAGEABLES); do \
+# 		make --directory=$$dir package; \
+# 		cp -r $$dir/dist/$$dir dist/activitywatch; \
+# 	done
+# # Move aw-qt to the root of the dist folder
+# 	mv dist/activitywatch/aw-qt aw-qt-tmp
+# 	mv aw-qt-tmp/* dist/activitywatch
+# 	rmdir aw-qt-tmp
+# # Remove problem-causing binaries
+# 	rm -f dist/activitywatch/libdrm.so.2       # see: https://github.com/ActivityWatch/activitywatch/issues/161
+# 	rm -f dist/activitywatch/libharfbuzz.so.0  # see: https://github.com/ActivityWatch/activitywatch/issues/660#issuecomment-959889230
+# # These should be provided by the distro itself
+# # Had to be removed due to otherwise causing the error:
+# #   aw-qt: symbol lookup error: /opt/activitywatch/libQt5XcbQpa.so.5: undefined symbol: FT_Get_Font_Format
+# 	rm -f dist/activitywatch/libfontconfig.so.1
+# 	rm -f dist/activitywatch/libfreetype.so.6
+# # Remove unnecessary files
+# 	rm -rf dist/activitywatch/pytz
 # Builds zips and setups
 	bash scripts/package/package-all.sh
 
